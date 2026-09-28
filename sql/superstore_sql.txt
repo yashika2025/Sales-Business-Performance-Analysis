@@ -1,0 +1,227 @@
+-- ============================================================
+-- SALES & BUSINESS PERFORMANCE ANALYSIS
+-- SQL Analysis + Results
+-- ============================================================
+
+
+-- ============================================================
+-- 1. DATA VALIDATION
+-- Question:
+-- How many records are present in the dataset?
+-- ============================================================
+
+SELECT COUNT(*) AS total_records
+FROM cleaned_data;
+
+-- RESULT:
+-- Total Records: 10,194
+
+
+-- ============================================================
+-- 2. OVERALL BUSINESS PERFORMANCE
+-- Question:
+-- What are the overall sales, profit and profit margin?
+-- ============================================================
+
+SELECT
+    ROUND(SUM(Sales), 2) AS Total_Sales,
+    ROUND(SUM(Profit), 2) AS Total_Profit,
+    ROUND(SUM(Profit) / SUM(Sales) * 100, 2) AS Profit_Margin
+FROM cleaned_data;
+
+-- RESULT:
+-- Total Sales: 2,326,534.35
+-- Total Profit: 292,296.81
+-- Profit Margin: 12.56%
+
+
+-- ============================================================
+-- 3. CATEGORY PERFORMANCE
+-- Question:
+-- Which product categories generate the most sales and profit?
+-- ============================================================
+
+SELECT
+    Category,
+    ROUND(SUM(Sales), 2) AS Total_Sales,
+    ROUND(SUM(Profit), 2) AS Total_Profit,
+    ROUND(SUM(Profit) / SUM(Sales) * 100, 2) AS Profit_Margin
+FROM cleaned_data
+GROUP BY Category
+ORDER BY Total_Sales DESC;
+
+-- RESULT:
+-- Technology:
+-- Sales: 838,983.28
+-- Profit: 164,543.38
+-- Margin: 19.61%
+--
+-- Furniture:
+-- Sales: 754,747.76
+-- Profit: 19,730.00
+-- Margin: 2.61%
+--
+-- Office Supplies:
+-- Sales: 731,893.31
+-- Profit: 126,023.44
+-- Margin: 17.22%
+
+-- INSIGHT:
+-- Technology generated the highest sales and profit,
+-- while Furniture had a much lower profit margin.
+
+
+-- ============================================================
+-- 4. REGIONAL PERFORMANCE
+-- Question:
+-- Which regions generate the highest sales and profitability?
+-- ============================================================
+
+SELECT
+    Region,
+    ROUND(SUM(Sales), 2) AS Total_Sales,
+    ROUND(SUM(Profit), 2) AS Total_Profit,
+    ROUND(SUM(Profit) / SUM(Sales) * 100, 2) AS Profit_Margin
+FROM cleaned_data
+GROUP BY Region
+ORDER BY Total_Sales DESC;
+
+-- RESULT:
+-- West:
+-- Sales: 739,813.61
+-- Profit: 110,798.82
+-- Margin: 14.98%
+--
+-- East:
+-- Sales: 691,828.17
+-- Profit: 94,883.26
+-- Margin: 13.71%
+--
+-- Central:
+-- Sales: 503,170.67
+-- Profit: 39,865.31
+-- Margin: 7.92%
+--
+-- South:
+-- Sales: 391,721.10
+-- Profit: 46,749.43
+-- Margin: 11.93%
+
+-- INSIGHT:
+-- West generated the highest sales and profit among the regions.
+
+
+-- ============================================================
+-- 5. YEARLY SALES TREND
+-- Question:
+-- How do sales change across different years?
+-- ============================================================
+
+SELECT
+    Year,
+    ROUND(SUM(Sales), 2) AS Total_Sales,
+    ROUND(SUM(Profit), 2) AS Total_Profit
+FROM cleaned_data
+GROUP BY Year
+ORDER BY Year;
+
+-- RESULT:
+-- 2023: Sales ≈ 494,040
+-- 2024: Sales ≈ 472,993
+-- 2025: Sales ≈ 613,934
+-- 2026: Sales ≈ 745,568
+
+-- INSIGHT:
+-- Sales declined slightly from 2023 to 2024,
+-- followed by growth in 2025 and 2026.
+
+
+-- ============================================================
+-- 6. HIGH-SALES / LOW-PROFIT PRODUCTS
+-- Question:
+-- Which products generate significant sales but have
+-- relatively low profit margins?
+-- ============================================================
+
+SELECT
+    Product_Name,
+    ROUND(SUM(Sales), 2) AS Total_Sales,
+    ROUND(SUM(Profit), 2) AS Total_Profit,
+    ROUND(SUM(Profit) / SUM(Sales) * 100, 2) AS Profit_Margin
+FROM cleaned_data
+GROUP BY Product_Name
+HAVING SUM(Sales) > 5000
+ORDER BY Profit_Margin ASC
+LIMIT 10;
+
+-- RESULT:
+-- The query identifies products with sales above 5,000
+-- but comparatively low profit margins.
+
+-- INSIGHT:
+-- High revenue does not necessarily mean high profitability.
+
+
+-- ============================================================
+-- 7. DISCOUNT AND PROFITABILITY
+-- Question:
+-- How does aggregated profit vary across discount levels?
+-- ============================================================
+
+SELECT
+    Discount,
+    ROUND(SUM(Sales), 2) AS Total_Sales,
+    ROUND(SUM(Profit), 2) AS Total_Profit
+FROM cleaned_data
+GROUP BY Discount
+ORDER BY Discount;
+
+-- RESULT:
+-- 0%  : Profit ≈ 326,718.59
+-- 10% : Profit ≈   9,099.97
+-- 15% : Profit ≈   1,418.99
+-- 20% : Profit ≈  91,079.52
+-- 30% : Profit ≈ -10,513.45
+-- 32% : Profit ≈  -2,391.14
+-- 40% : Profit ≈ -23,086.37
+-- 45% : Profit ≈  -2,493.11
+-- 50% : Profit ≈  -2,050.43
+-- 60% : Profit ≈  -6,164.35
+-- 70% : Profit ≈ -40,300.57
+-- 80% : Profit ≈ -30,565.27
+
+-- INSIGHT:
+-- Several higher discount levels are associated with
+-- negative aggregated profit.
+-- This indicates a relationship, not necessarily causation.
+
+
+-- ============================================================
+-- 8. TOP 10 MOST PROFITABLE PRODUCTS
+-- Question:
+-- Which products generate the highest total profit?
+-- ============================================================
+
+SELECT
+    Product_Name,
+    ROUND(SUM(Profit), 2) AS Total_Profit
+FROM cleaned_data
+GROUP BY Product_Name
+ORDER BY Total_Profit DESC
+LIMIT 10;
+
+-- RESULT:
+-- 1. Canon imageCLASS 2200 Advanced Copier: 25,199.93
+-- 2. Fellowes PB500 Electric Punch...: 7,753.04
+-- 3. Hewlett Packard LaserJet 3310 Copier: 6,983.88
+-- 4. Canon PC1060 Personal Laser Copier: 4,570.93
+-- 5. HP Designjet T520 Inkjet Large Format Printer: 4,094.98
+-- 6. Ativa V4110MDD Micro-Cut Shredder: 3,772.95
+-- 7. 3D Systems Cube Printer: 3,717.97
+-- 8. Plantronics Savi W720: 3,696.28
+-- 9. Ibico EPK-21 Electric Binding System: 3,345.28
+-- 10. Zebra ZM400 Thermal Label Printer: 3,343.54
+
+-- INSIGHT:
+-- The most profitable products are concentrated in
+-- specific high-value product lines.
