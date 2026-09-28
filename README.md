@@ -8,7 +8,7 @@ The project uses Excel, SQL, and Power BI to perform data cleaning, analysis, vi
 
 ## 🛠️ Tools & Technologies
 
-- Microsoft Excel
+- Microsoft Excel 
 - SQL
 - Power BI
 - Data Cleaning
